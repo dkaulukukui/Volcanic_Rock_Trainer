@@ -31,9 +31,9 @@ button5 = 23
 #climbing pattern definitions
 pattern1 = [2,5,12,16,21,29,30,38,42,46]
 pattern2 = [0,6,10,18,22,25,31,36,40,49]
-pattern3 = [1,7,13,15,20,27,32,35,44,48]
-pattern4 = [1,7,13,15,20,27,32,35,44,48]
-pattern5 = [1,7,13,15,20,27,32,35,44,48]
+pattern3 = [1,7,11,15,20,27,32,35,44,48]
+pattern4 = [4,8,14,17,24,26,33,39,43,47]
+pattern5 = [3,9,13,15,20,28,32,35,44,45]
 
 #GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -50,6 +50,9 @@ GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
 # Intialize the library (must be called once before other functions).
 strip.begin()
+
+
+
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
@@ -110,7 +113,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
 				strip.setPixelColor(i+q, 0)
 
 #clear matrix
-def clear(strip):
+def clear():
         """Wipe color across display a pixel at a time."""
         for i in range(strip.numPixels()):
                 strip.setPixelColor(i, Color(0,0,0))
@@ -119,34 +122,66 @@ def clear(strip):
 
 #### Button call back functions###
 
-def button1Call(strip):
+def button1Call(input):
 	print "button 1 callback"
+	clear()
 
-def button2Call(strip):
+	for i in pattern1:
+		strip.setPixelColor(i, Color(255,0,0)) #Red
+	strip.show()
+	time.sleep(5)
+
+
+def button2Call(input):
         print "button 2 callback"
+        clear()
 
-def button3Call(strip):
+        for i in pattern2:
+                strip.setPixelColor(i, Color(255,255,0)) #Red
+        strip.show()
+        time.sleep(5)
+
+
+def button3Call(input):
         print "button 3 callback"
+        clear()
 
-def button4Call(strip):
+        for i in pattern3:
+                strip.setPixelColor(i, Color(0,255,0)) #Red
+        strip.show()
+        time.sleep(5)
+
+
+def button4Call(input):
         print "button 4 callback"
+        clear()
 
-def button5Call(strip):
+        for i in pattern4:
+                strip.setPixelColor(i, Color(0,255,255)) #Red
+        strip.show()
+        time.sleep(5)
+
+
+def button5Call(input):
         print "button 5 callback"
+        clear()
 
+        for i in pattern5:
+                strip.setPixelColor(i, Color(0,0,255)) #Red
+        strip.show()
+        time.sleep(5)
 
 
 ########### Main Program ####################
 def main():
 
-
 	while True:
 
-		GPIO.add_event_detect(button1, GPIO.FALLING, callback=button1Call, bouncetime=500)
-                GPIO.add_event_detect(button2, GPIO.FALLING, callback=button2Call, bouncetime=500)
-                GPIO.add_event_detect(button3, GPIO.FALLING, callback=button3Call, bouncetime=500)
-                GPIO.add_event_detect(button4, GPIO.FALLING, callback=button4Call, bouncetime=500)
-                GPIO.add_event_detect(button5, GPIO.FALLING, callback=button5Call, bouncetime=500)
+		GPIO.add_event_detect(button1, GPIO.FALLING, callback=button1Call, bouncetime=500)            
+		GPIO.add_event_detect(button2, GPIO.FALLING, callback=button2Call, bouncetime=500)
+		GPIO.add_event_detect(button3, GPIO.FALLING, callback=button3Call, bouncetime=500)
+	        GPIO.add_event_detect(button4, GPIO.FALLING, callback=button4Call, bouncetime=500)
+ 	        GPIO.add_event_detect(button5, GPIO.FALLING, callback=button5Call, bouncetime=500)
 
 		try:
 	    		raw_input()
