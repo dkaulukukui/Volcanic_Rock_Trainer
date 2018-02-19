@@ -1,0 +1,16 @@
+[Unit]
+Description=Python daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=sudo /home/pi/RGB_LED_Climb_project/Main_RGB_Trainer_v5.py >> /home/pi/RGB_climb_trainer.log 2>&1
+Restart=always
+User=pi
+
+# Give the script some time to startup
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+Alias=RGB_Climber_systemcd_service
