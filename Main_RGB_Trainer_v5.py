@@ -133,22 +133,15 @@ def clear():
 
 def reset(input):
 	global state
-        print "state"
-	print state
 	state = not state #reverse state
 
 	if state == True:
-		print "Lights On"
 		colorWipe(strip, Color(125,5,5), 5)
 		
         else:
-		print "Lights Off"
 		clear()
 
 def buttonCall(input):
-        print "button"
-	print input
-
         if state == True: #only show if syste is "on", fake on/off switch
                 clear()
 
@@ -169,22 +162,16 @@ def main():
 	while True:
 		
 		if(GPIO.input(reset_button) == False):
-			print("reset")
 			reset(4)
 		elif(GPIO.input(button1) == False):
-			print("button1")
 			buttonCall(0)
                 elif(GPIO.input(button2) == False):
-                        print("button2")
                         buttonCall(1)
                 elif(GPIO.input(button3) == False):
-                        print("button3")
                         buttonCall(2)
                 elif(GPIO.input(button4) == False):
-                        print("button4")
                         buttonCall(3)
                 elif(GPIO.input(button5) == False):
-                        print("button5")
                         buttonCall(4)
 
 		time.sleep(0.2)
