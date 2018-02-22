@@ -34,14 +34,9 @@ reset_button = 4
 #program state button
 state = 0 #state FALSE means nothing is running, state 1 means other python is running
 
-#climbing pattern definitions
-pattern1 = [2,5,12,16,21,29,30,38,42,46]
-pattern2 = [0,6,10,18,22,25,31,36,40,49]
-pattern3 = [1,7,11,15,20,27,32,35,44,48]
-pattern4 = [4,8,14,17,24,26,33,39,43,47]
-pattern5 = [3,9,13,15,20,28,32,35,44,45]
-
-pattern  = [2,5,12,16,21,29,30,38,42,46],[0,6,10,18,22,25,31,36,40,49],[1,7,11,15,20,27,32,35,44,48],[4,8,14,17,24,26,33,39,43,47],[3,9,13,15,20,28,32,35,44,45]
+#filenames for the configuration files, one for button patterns, one for button colors
+pattern_filename = 'climbing_patterns.cfg'
+color_filename = 'colors.cfg' 
 
 #GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -59,9 +54,6 @@ GPIO.setup(reset_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
 # Intialize the library (must be called once before other functions).
 strip.begin()
-
-
-
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
@@ -131,7 +123,7 @@ def clear():
 
 #### Button call back functions###
 
-def reset(input):
+def reset():
 	global state
 	state = not state #reverse state
 
@@ -141,38 +133,48 @@ def reset(input):
         else:
 		clear()
 
-def buttonCall(input):
+def buttonCall(SW_input, patterns_array, R, G, B): 
         if state == True: #only show if syste is "on", fake on/off switch
-                clear()
+                clear()		
 
-		R=input*25
-		G=125 - (input+1)*25
-		B= int(time.time())%125		
-
-                for i in pattern[input]:
+                for i in patterns_array[SW_input]:
                         strip.setPixelColor(i, Color(R,G,B))
                 strip.show()
                 time.sleep(0.5)
 
+######### Read climbing patterns from file########
+def read_from_file(filename):
+
+	with open(filename) as f:
+    		patterns_array = []
+    		for line in f:
+        		line = line.split() # split lines at blanks 
+        		if line:            # skip blanks)
+            			line = [int(i) for i in line]
+            			patterns_array.append(line)
+	return patterns_array
 
 
 ########### Main Program ####################
 def main():
 
+	pattern = read_from_file(pattern_filename) # read config file patters into array
+	colors = read_from_file(color_filename)
+
 	while True:
 		
 		if(GPIO.input(reset_button) == False):
-			reset(4)
+			reset()  # call reset function, reset acts as a state switch
 		elif(GPIO.input(button1) == False):
-			buttonCall(0)
+			buttonCall(0, pattern, colors[0][0],colors[0][1],colors[0][2])
                 elif(GPIO.input(button2) == False):
-                        buttonCall(1)
+                        buttonCall(1, pattern, colors[1][0],colors[1][1],colors[1][2])
                 elif(GPIO.input(button3) == False):
-                        buttonCall(2)
+                        buttonCall(2, pattern, colors[2][0],colors[2][1],colors[2][2])
                 elif(GPIO.input(button4) == False):
-                        buttonCall(3)
+                        buttonCall(3, pattern, colors[3][0],colors[3][1],colors[3][2])
                 elif(GPIO.input(button5) == False):
-                        buttonCall(4)
+                        buttonCall(4, pattern, colors[4][0],colors[4][1],colors[4][2])
 
 		time.sleep(0.2)
 			
