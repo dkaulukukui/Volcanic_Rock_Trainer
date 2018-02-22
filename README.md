@@ -18,7 +18,12 @@ Press button 1, initiate routine 1, button 2 = routine 2 etc.
 There will be one button which acts as a start/stop/reset button.  
 
 This button will be running as a daemon upon start up and then call
-the main python script when pressed.  when pressed again it will call 
-a third script to clear the LEDs then return to the wait state.
+the main python script when pressed. 
 
+There are two configuration files associated with this script:
+
+climbling_patterns.cfg - holds 5 climbming patters in text format space delineated. each new line 
+starts a new pattern
+
+colors.cfg - holds the RGB color values for the above patterns.
 
