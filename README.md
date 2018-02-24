@@ -20,10 +20,13 @@ There will be one button which acts as a start/stop/reset button.
 This button will be running as a daemon upon start up and then call
 the main python script when pressed. 
 
-There are two configuration files associated with this script:
+There are configuration files associated with this script:
 
-climbling_patterns.cfg - holds 5 climbming patters in text format space delineated. each new line 
-starts a new pattern
+Each climbing pattern has its own configuration file with the following format:
 
-colors.cfg - holds the RGB color values for the above patterns.
+ROW(0-8) LED#(0-2) RED(0-255) GREEN(0-255) BLUE(0-255)
 
+The main file reads in this file into a list of lists 
+which is then iterated through turning on each LED specified to the specified color.
+
+Multiple LEDS in each row can be lit
