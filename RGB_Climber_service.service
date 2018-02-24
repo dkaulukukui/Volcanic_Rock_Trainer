@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /home/pi/RGB_LED_Climb_project/Main_RGB_Trainer_v5.py
+ExecStart=/usr/bin/python /home/pi/RGB_LED_Climb_project/Main_RGB_Trainer.py
 Restart=always
 
 # Give the script some time to startup
