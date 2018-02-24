@@ -37,6 +37,7 @@ state = 0 #state FALSE means nothing is running, state 1 means other python is r
 #filenames for the configuration files, one for button patterns, one for button colors
 pattern_filename = 'climbing_patterns.cfg'
 color_filename = 'colors.cfg' 
+working_dir = '/home/pi/RGB_LED_Climb_project/'
 
 #Training board LED mappings
 LED_OFFSET = 2
@@ -142,7 +143,7 @@ def buttonCall(SW_input):
                 clear()		
 
 	#open pattern file for specific button pressed
-	pattern_filename = "pattern"+ str(SW_input) +".cfg" 
+	pattern_filename = working_dir + "pattern"+ str(SW_input) +".cfg" 
 
 	#print pattern_filename
 	pattern = read_from_file(pattern_filename)
