@@ -34,14 +34,14 @@ reset_button = 4
 #program state button
 state = 0 #state FALSE means nothing is running, state 1 means other python is running
 
-#climbing pattern definitions
-pattern1 = [2,5,12,16,21,29,30,38,42,46]
-pattern2 = [0,6,10,18,22,25,31,36,40,49]
-pattern3 = [1,7,11,15,20,27,32,35,44,48]
-pattern4 = [4,8,14,17,24,26,33,39,43,47]
-pattern5 = [3,9,13,15,20,28,32,35,44,45]
+#filenames for the configuration files, one for button patterns, one for button colors
+pattern_filename = 'climbing_patterns.cfg'
+color_filename = 'colors.cfg' 
+working_dir = '/home/pi/RGB_LED_Climb_project/'
 
-pattern  = [2,5,12,16,21,29,30,38,42,46],[0,6,10,18,22,25,31,36,40,49],[1,7,11,15,20,27,32,35,44,48],[4,8,14,17,24,26,33,39,43,47],[3,9,13,15,20,28,32,35,44,45]
+#Training board LED mappings
+LED_OFFSET = 2
+LED_MAP =[18,17,0],[19,16,1],[20,15,2],[21,14,3],[22,13,4],[23,12,5],[24,11,6],[25,10,7],[26,9,8]
 
 #GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -59,9 +59,6 @@ GPIO.setup(reset_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
 # Intialize the library (must be called once before other functions).
 strip.begin()
-
-
-
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
@@ -131,7 +128,7 @@ def clear():
 
 #### Button call back functions###
 
-def reset(input):
+def reset():
 	global state
 	state = not state #reverse state
 
@@ -141,28 +138,60 @@ def reset(input):
         else:
 		clear()
 
-def buttonCall(input):
+def buttonCall(SW_input): 
         if state == True: #only show if syste is "on", fake on/off switch
-                clear()
+                clear()		
 
-		R=input*25
-		G=125 - (input+1)*25
-		B= int(time.time())%125		
+	#open pattern file for specific button pressed
+	pattern_filename = working_dir + "pattern"+ str(SW_input) +".cfg" 
 
-                for i in pattern[input]:
-                        strip.setPixelColor(i, Color(R,G,B))
-                strip.show()
-                time.sleep(0.5)
+	#print pattern_filename
+	pattern = read_from_file(pattern_filename)
 
+	#iterate through all items in pattern file setting each LED specified
+	for x in range(0, len(pattern)):
+		#print "x is " + str(x)
+
+		pixel_v1 = pattern[x][0] #get pixel mapping first value
+		pixel_v2 = pattern[x][1] #get pixel mapping second value
+		pixel = LED_MAP[pixel_v1][pixel_v2]+LED_OFFSET #map pixels to installed leds
+		R = pattern[x][2] #set Red value from file
+		G = pattern[x][3] #set Green value from file
+		B = pattern[x][4] #set Blue value from file
+
+		#print "pixel is LED_MAP[" + str(pixel_v1) +"]"+"["+str(pixel_v2)+"]="+ str(pixel)
+		#print "Red value is " + str(R)
+		#print "Green value is " + str(G)
+		#print "Blue value is " + str(B)
+
+		strip.setPixelColor(pixel, Color(R,G,B))  #set pixel
+        
+	strip.show()
+        time.sleep(0.5)
+
+######### Read climbing patterns from file########
+def read_from_file(filename):
+
+	with open(filename) as f:
+    		patterns_array = []
+    		for line in f:
+        		line = line.split() # split lines at blanks 
+        		if line:            # skip blanks)
+            			line = [int(i) for i in line]
+            			patterns_array.append(line)
+	return patterns_array
 
 
 ########### Main Program ####################
 def main():
 
+	#pattern = read_from_file(pattern_filename) # read config file patters into array
+	#colors = read_from_file(color_filename)
+
 	while True:
 		
 		if(GPIO.input(reset_button) == False):
-			reset(4)
+			reset()  # call reset function, reset acts as a state switch
 		elif(GPIO.input(button1) == False):
 			buttonCall(0)
                 elif(GPIO.input(button2) == False):
