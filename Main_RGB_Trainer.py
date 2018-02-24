@@ -133,6 +133,10 @@ def main():
 		
 		if(GPIO.input(reset_button) == False):
 			reset()  # call reset function, reset acts as a state switch
+		elif(GPIO.input(button1) == False) and (GPIO.input(button2) == False):
+			buttonCall(5)
+		elif(GPIO.input(button2) == False) and (GPIO.input(button3) == False):
+			buttonCall(6)
 		elif(GPIO.input(button1) == False):
 			buttonCall(0)
                 elif(GPIO.input(button2) == False):
