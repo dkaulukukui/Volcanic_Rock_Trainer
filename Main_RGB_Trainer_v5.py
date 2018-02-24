@@ -38,6 +38,10 @@ state = 0 #state FALSE means nothing is running, state 1 means other python is r
 pattern_filename = 'climbing_patterns.cfg'
 color_filename = 'colors.cfg' 
 
+#Training board LED mappings
+LED_OFFSET = 2
+LED_MAP =[18,17,0],[19,16,1],[20,15,2],[21,14,3],[22,13,4],[23,12,5],[24,11,6],[25,10,7],[26,9,8]
+
 #GPIO setup
 GPIO.setmode(GPIO.BCM)
 
@@ -133,14 +137,36 @@ def reset():
         else:
 		clear()
 
-def buttonCall(SW_input, patterns_array, R, G, B): 
+def buttonCall(SW_input): 
         if state == True: #only show if syste is "on", fake on/off switch
                 clear()		
 
-                for i in patterns_array[SW_input]:
-                        strip.setPixelColor(i, Color(R,G,B))
-                strip.show()
-                time.sleep(0.5)
+	#open pattern file for specific button pressed
+	pattern_filename = "pattern"+ str(SW_input) +".cfg" 
+
+	#print pattern_filename
+	pattern = read_from_file(pattern_filename)
+
+	#iterate through all items in pattern file setting each LED specified
+	for x in range(0, len(pattern)):
+		#print "x is " + str(x)
+
+		pixel_v1 = pattern[x][0] #get pixel mapping first value
+		pixel_v2 = pattern[x][1] #get pixel mapping second value
+		pixel = LED_MAP[pixel_v1][pixel_v2]+LED_OFFSET #map pixels to installed leds
+		R = pattern[x][2] #set Red value from file
+		G = pattern[x][3] #set Green value from file
+		B = pattern[x][4] #set Blue value from file
+
+		#print "pixel is LED_MAP[" + str(pixel_v1) +"]"+"["+str(pixel_v2)+"]="+ str(pixel)
+		#print "Red value is " + str(R)
+		#print "Green value is " + str(G)
+		#print "Blue value is " + str(B)
+
+		strip.setPixelColor(pixel, Color(R,G,B))  #set pixel
+        
+	strip.show()
+        time.sleep(0.5)
 
 ######### Read climbing patterns from file########
 def read_from_file(filename):
@@ -158,23 +184,23 @@ def read_from_file(filename):
 ########### Main Program ####################
 def main():
 
-	pattern = read_from_file(pattern_filename) # read config file patters into array
-	colors = read_from_file(color_filename)
+	#pattern = read_from_file(pattern_filename) # read config file patters into array
+	#colors = read_from_file(color_filename)
 
 	while True:
 		
 		if(GPIO.input(reset_button) == False):
 			reset()  # call reset function, reset acts as a state switch
 		elif(GPIO.input(button1) == False):
-			buttonCall(0, pattern, colors[0][0],colors[0][1],colors[0][2])
+			buttonCall(0)
                 elif(GPIO.input(button2) == False):
-                        buttonCall(1, pattern, colors[1][0],colors[1][1],colors[1][2])
+                        buttonCall(1)
                 elif(GPIO.input(button3) == False):
-                        buttonCall(2, pattern, colors[2][0],colors[2][1],colors[2][2])
+                        buttonCall(2)
                 elif(GPIO.input(button4) == False):
-                        buttonCall(3, pattern, colors[3][0],colors[3][1],colors[3][2])
+                        buttonCall(3)
                 elif(GPIO.input(button5) == False):
-                        buttonCall(4, pattern, colors[4][0],colors[4][1],colors[4][2])
+                        buttonCall(4)
 
 		time.sleep(0.2)
 			
