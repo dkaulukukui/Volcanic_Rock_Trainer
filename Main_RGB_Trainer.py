@@ -138,6 +138,10 @@ def main():
 			buttonCall(5)
 		elif(GPIO.input(button2) == False) and (GPIO.input(button3) == False):
 			buttonCall(6)
+		elif(GPIO.input(button3) == False) and (GPIO.input(button4) == False):
+                        buttonCall(7)
+		elif(GPIO.input(button4) == False) and (GPIO.input(button5) == False):
+                        buttonCall(8)
 		elif(GPIO.input(button1) == False):
 			buttonCall(0)
                 elif(GPIO.input(button2) == False):
