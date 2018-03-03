@@ -12,10 +12,10 @@ import sys
 import RPi.GPIO as GPIO
 
 # LED strip configuration:
-LED_COUNT      = 29      # Number of LED pixels.
+LED_COUNT      = 27      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
-LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_FREQ_HZ    = 400000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
@@ -32,16 +32,17 @@ button5 = 23
 reset_button = 4
 
 #program state button
-state = 0 #state FALSE means nothing is running, state 1 means other python is running
+state = 0 #state 0 = program "OFF", no button response, state 1 = program is "ON", buttons respond 
 
 #filenames for the configuration files, one for button patterns, one for button colors
-pattern_filename = 'climbing_patterns.cfg'
-color_filename = 'colors.cfg' 
 working_dir = '/home/pi/RGB_LED_Climb_project/'
 
 #Training board LED mappings
-LED_OFFSET = 2
-LED_MAP =[18,17,0],[19,16,1],[20,15,2],[21,14,3],[22,13,4],[23,12,5],[24,11,6],[25,10,7],[26,9,8]
+LED_OFFSET = 0  # LED offset is to account for any leading leds which aren't used due to install limitations
+LED_MAP =[2,1,0],[3,4,5],[8,7,6],[9,10,11],[14,13,12],[15,16,17],[20,19,18],[21,22,23],[26,25,24]
+
+#time delay
+TIME_DELAY = 0.2
 
 #GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -83,7 +84,7 @@ def reset():
 	state = not state #reverse state
 
 	if state == True:
-		colorWipe(strip, Color(125,5,5), 5)
+		colorWipe(strip, Color(200,5,5), 5)
 		
         else:
 		clear() #clear LEDS
@@ -103,7 +104,7 @@ def buttonCall(SW_input):
 
 			pixel_v1 = pattern[x][0] #get pixel mapping first value
 			pixel_v2 = pattern[x][1] #get pixel mapping second value
-			pixel = LED_MAP[pixel_v1][pixel_v2]+LED_OFFSET #map pixels to installed leds
+			pixel = LED_MAP[pixel_v1][pixel_v2]+LED_OFFSET #map pixels to installed leds.
 			R = pattern[x][2] #set Red value from file
 			G = pattern[x][3] #set Green value from file
 			B = pattern[x][4] #set Blue value from file
@@ -111,7 +112,7 @@ def buttonCall(SW_input):
 			strip.setPixelColor(pixel, Color(R,G,B))  #set pixel
         
 			strip.show()
-		        time.sleep(0.2)
+		        time.sleep(TIME_DELAY) #delay here is between each pixel creating animation 
 
 ######### Read climbing patterns from file########
 def read_from_file(filename):
@@ -129,10 +130,18 @@ def read_from_file(filename):
 ########### Main Program ####################
 def main():
 
-	while True:
+	while True:  #polling loop with delay at the end for debouncing of inputs
 		
 		if(GPIO.input(reset_button) == False):
 			reset()  # call reset function, reset acts as a state switch
+		elif(GPIO.input(button1) == False) and (GPIO.input(button2) == False):
+			buttonCall(5)
+		elif(GPIO.input(button2) == False) and (GPIO.input(button3) == False):
+			buttonCall(6)
+		elif(GPIO.input(button3) == False) and (GPIO.input(button4) == False):
+                        buttonCall(7)
+		elif(GPIO.input(button4) == False) and (GPIO.input(button5) == False):
+                        buttonCall(8)
 		elif(GPIO.input(button1) == False):
 			buttonCall(0)
                 elif(GPIO.input(button2) == False):
@@ -144,7 +153,7 @@ def main():
                 elif(GPIO.input(button5) == False):
                         buttonCall(4)
 
-		time.sleep(0.2)
+		time.sleep(TIME_DELAY)
 			
 	GPIO.cleanup()
 
