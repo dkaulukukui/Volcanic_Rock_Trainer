@@ -28,13 +28,20 @@ This project is to build climbing trainer board for Volcanic Rock Gym
 ROW(0-8) LED#(0-2) RED(0-255) GREEN(0-255) BLUE(0-255)
 
 example pattern file:
+```
   0 2 255 0 0
   1 0 0 0 255
   2 2 255 0 0
   3 0 0 0 255
-
+```
 - The main file reads in this file into a list of lists  which is then iterated through turning on each LED specified to the specified color.
  - Multiple LEDS in each row can be lit
+ ```
+0 2 255 0 0
+0 0 0 0 255
+2 2 255 0 0
+2 0 0 0 255
+```
 
 ## Script Launcher
 - Python script is automatically launched using the systemd method.
