@@ -5,6 +5,9 @@ This project will be completed using the following:
 Hardware: 
 - Raspi Zero-W
 - WS2811 RGB led lighting string
+- 1000uF Capacitor for smoothing power inrush to Ws2811
+- IN4001 Diode
+- 3.3v to 5v logic level converter for raspi to WS2811 communications
 - Custom interface board
 - 6 x Arcade buttons (N.O.)
 
