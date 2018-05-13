@@ -2,8 +2,6 @@
 
 This project is to build climbing trainer board for Volcanic Rock Gym
 
-## This project will be completed using the following:
-
 ## Hardware: 
 - Raspi Zero-W
 - WS2811 RGB led lighting string
