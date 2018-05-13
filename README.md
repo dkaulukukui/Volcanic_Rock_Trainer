@@ -1,4 +1,6 @@
-#This project is to build climbing trainer board for Volcanic Rock Gym
+#Volcanic Rock Gym RGB LED Training Board
+
+This project is to build climbing trainer board for Volcanic Rock Gym
 
 This project will be completed using the following:
 
