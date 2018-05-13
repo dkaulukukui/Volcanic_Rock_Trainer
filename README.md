@@ -43,10 +43,13 @@ example pattern file:
 
 ## Script Launcher
 - Python script is automatically launched using the systemd method.
-- RGB_Climber_service.service is created and placed into /lib/systemd/system/
+- RGB_Climber_service.service is created (see file for details)
+  - ExecStart must be modified to match path of python script
+  - ExecStart=/usr/bin/python /home/pi/*path_to_script_dir*/Main_RGB_Trainer.py
+- Place file into /lib/systemd/system/
 - service must then be enabled:
-  -sudo systemctl daemon-reload
-  -sudo systemctl enable sample.service
+  - sudo systemctl daemon-reload
+  - sudo systemctl enable sample.service
 - Status can be checked via: 
   - sudo systemctl status RGB_Climber_service.service -l
 - Status can also be start/stopped via the same method:
